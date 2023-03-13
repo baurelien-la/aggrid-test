@@ -57,21 +57,18 @@ export class AppComponent implements OnInit, AfterViewInit {
         const agGridColumn = this.agGrid.api.getColumnDefs();
         if (agGridColumn!.length) columns = agGridColumn!;
 
-        columns.forEach(group => {
-          (group as ColGroupDef).children.forEach((column: ColDef) => {
+        columns.forEach((column: ColDef) => {
             column.hide = true;
           })
-        })
 
         defaultColumns.forEach((colDef) => {
-          columns.forEach(group => {
-            (group as ColGroupDef).children.forEach((column: ColDef) => {
+          columns.forEach((column: ColDef) => {
               if (column.field === colDef.field) {
                 column.hide = false;
               }
             })
           })
-        })
+
 
         console.log('Col Defs to display :')
         console.log(columns);
