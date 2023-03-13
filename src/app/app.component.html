@@ -1,0 +1,27 @@
+<ng-container *ngIf="{
+  displayedColDefs: displayedColDefs$ | async,
+  columnDefs: columnDefs$ | async,
+  rowData: rowData$ | async
+} as _">
+  <mat-form-field appearance="fill">
+    <mat-label>Selector</mat-label>
+    <mat-select [formControl]="defaultControl" (selectionChange)="handleChange($event)">
+        <mat-option *ngFor="let view of defaultViews" [value]="view.visibleColumns">
+          {{view.name}}
+        </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- AG Grid Angular Component -->
+  <ag-grid-angular
+    style="width: 100%; height: 100%"
+    class="ag-theme-alpine"
+    [columnDefs]="_.displayedColDefs"
+    [defaultColDef]="defaultColDef"
+    [rowData]="_.rowData"
+    [rowSelection]="'multiple'"
+    [animateRows]="true"
+    (gridReady)="onGridReady($event)"
+    (cellClicked)="onCellClicked($event)"
+  ></ag-grid-angular>
+</ng-container>
