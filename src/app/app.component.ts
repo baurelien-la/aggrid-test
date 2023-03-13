@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridReadyEvent, CellClickedEvent, ColGroupDef } from 'ag-grid-community';
 import { GROUPDEF } from 'data/coldef';
 import { DATA } from 'data/data';
+import { DEFAULT_VIEWS } from 'data/defaultview';
 import { BehaviorSubject, combineLatest, map, of, Observable, Subject, delay } from 'rxjs';
 
 export interface View {
@@ -18,45 +19,8 @@ export interface View {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  defaultViews: View[] = [
-    {
-      name: 'first',
-      visibleColumns: [
-        {
-          field: "cat1-col1",
-        },
-        {
-          field: "cat1-col2",
-        },
-        {
-          field: "cat1-col5",
-        }
-        ,
-        {
-          field: "cat2-col1",
-        }
-      ]
-    },
-    {
-      name: 'second',
-      visibleColumns: [
-        {
-          field: "cat1-col1",
-        },
-        {
-          field: "cat1-col2",
-        },
-        {
-          field: "cat1-col7",
-        }
-        ,
-        {
-          field: "cat3-col1",
-        }
-      ]
-    }
-  ];
+export class AppComponent implements OnInit, AfterViewInit {
+  defaultViews: View[] = DEFAULT_VIEWS;
 
   // Each Column Definition results in one Column.
   columnDefs$!: Observable<(ColGroupDef | ColDef)[]>;
@@ -70,6 +34,7 @@ export class AppComponent implements OnInit {
   public defaultColDef: ColDef = {
     sortable: true,
     filter: true,
+    width: 100,
   };
 
   // Data that gets displayed in the grid
@@ -81,7 +46,6 @@ export class AppComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   defaultControl = new FormControl();
-
 
   ngOnInit(): void {
 
@@ -114,6 +78,10 @@ export class AppComponent implements OnInit {
         return columns;
       })
     );
+  }
+
+  ngAfterViewInit(): void {
+    this.agGrid.api.sizeColumnsToFit();
   }
 
   // Example load data from sever
